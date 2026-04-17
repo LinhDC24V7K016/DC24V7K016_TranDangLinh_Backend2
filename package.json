@@ -1,0 +1,24 @@
+{
+  "name": "dc24v7k016_trandanglinh_backend1",
+  "version": "1.0.0",
+  "description": "Phat trien ung dung Web - CT449",
+  "homepage": "https://github.com/LinhDC24V7K016/DC24V7K016_TranDangLinh_Backend1#readme",
+  "bugs": {
+    "url": "https://github.com/LinhDC24V7K016/DC24V7K016_TranDangLinh_Backend1/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LinhDC24V7K016/DC24V7K016_TranDangLinh_Backend1.git"
+  },
+  "license": "ISC",
+  "author": "Tran Dang Linh",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  }
+}
