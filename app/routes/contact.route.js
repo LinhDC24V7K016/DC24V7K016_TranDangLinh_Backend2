@@ -2,8 +2,11 @@ const express = require("express");
 const contacts = require("../controllers/contact.controller");
 const multer = require("multer");
 const path = require("path");
+const { verifyToken } = require("../middlewares/auth.middleware");
 
 const router = express.Router();
+
+router.use(verifyToken);
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
