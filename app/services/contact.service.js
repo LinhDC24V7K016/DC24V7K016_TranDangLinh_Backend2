@@ -6,12 +6,19 @@ class ContactService {
   }
 
   extractContactData(payload) {
+    let group = payload.group;
+    if (group && !Array.isArray(group)) {
+      group = [group];
+    }
+
     const contact = {
       name: payload.name,
       email: payload.email,
       address: payload.address,
       phone: payload.phone,
-      favorite: payload.favorite,
+      favorite: payload.favorite === "true" || payload.favorite === true,
+      group: group,
+      avatar: payload.avatar,
     };
 
     Object.keys(contact).forEach(

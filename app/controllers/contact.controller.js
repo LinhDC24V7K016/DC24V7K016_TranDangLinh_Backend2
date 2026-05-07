@@ -7,6 +7,10 @@ exports.create = async (req, res, next) => {
     return next(new ApiError(400, "Name can not be empty"));
   }
 
+  if (req.file) {
+    req.body.avatar = req.file.filename;
+  }
+
   try {
     const contactService = new ContactService(MongoDB.client);
     const document = await contactService.create(req.body);
@@ -54,8 +58,12 @@ exports.findOne = async (req, res, next) => {
 };
 
 exports.update = async (req, res, next) => {
-  if (Object.keys(req.body).length === 0) {
+  if (Object.keys(req.body).length === 0 && !req.file) {
     return next(new ApiError(400, "Data to update can not be empty"));
+  }
+
+  if (req.file) {
+    req.body.avatar = req.file.filename;
   }
 
   try {
