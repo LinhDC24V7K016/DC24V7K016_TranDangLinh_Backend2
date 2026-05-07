@@ -10,7 +10,8 @@ class UserService {
     const user = {
       email: payload.email,
       name: payload.name,
-      password: await bcrypt.hash(payload.password, 10),
+      password: payload.password ? await bcrypt.hash(payload.password, 10) : null,
+      googleId: payload.googleId || null,
     };
 
     const result = await this.User.findOneAndUpdate(
@@ -19,6 +20,25 @@ class UserService {
       { returnDocument: "after", upsert: true }
     );
     return result;
+  }
+
+  async findOrCreateGoogleUser(profile) {
+    let user = await this.findByEmail(profile.email);
+    if (!user) {
+      user = await this.create({
+        email: profile.email,
+        name: profile.name,
+        password: null,
+        googleId: profile.sub,
+      });
+    } else if (!user.googleId) {
+      user = await this.User.findOneAndUpdate(
+        { email: profile.email },
+        { $set: { googleId: profile.sub } },
+        { returnDocument: "after" }
+      );
+    }
+    return user;
   }
 
   async findByEmail(email) {

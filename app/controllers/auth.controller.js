@@ -64,3 +64,38 @@ exports.login = async (req, res, next) => {
     );
   }
 };
+
+const { OAuth2Client } = require("google-auth-library");
+const GOOGLE_CLIENT_ID = "153499108040-2ra119d90197jbre34ppgfsslnh0etpe.apps.googleusercontent.com";
+const client = new OAuth2Client(GOOGLE_CLIENT_ID);
+
+exports.googleLogin = async (req, res, next) => {
+  const { credential } = req.body;
+  if (!credential) {
+    return next(new ApiError(400, "No Google credential provided"));
+  }
+
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+
+    const userService = new UserService(MongoDB.client);
+    const user = await userService.findOrCreateGoogleUser(payload);
+    const token = jwt.sign({ id: user._id }, SECRET_KEY, {
+      expiresIn: "24h",
+    });
+
+    const { password, ...userWithoutPassword } = user;
+
+    return res.send({
+      user: userWithoutPassword,
+      token: token,
+    });
+  } catch (error) {
+    console.error("Google verify error:", error);
+    return next(new ApiError(401, "Google authentication failed"));
+  }
+};
