@@ -17,6 +17,7 @@ class ContactService {
       address: payload.address,
       phone: payload.phone,
       favorite: payload.favorite === "true" || payload.favorite === true,
+      pinned: payload.pinned === "true" || payload.pinned === true,
       group: group,
       avatar: payload.avatar,
       userId: payload.userId,
@@ -32,7 +33,7 @@ class ContactService {
     const contact = this.extractContactData(payload);
     const result = await this.Contact.findOneAndUpdate(
       contact,
-      { $set: { favorite: contact.favorite === true } },
+      { $set: { favorite: contact.favorite === true, pinned: contact.pinned === true } },
       { returnDocument: "after", upsert: true },
     );
     return result;
